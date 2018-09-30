@@ -1,3 +1,5 @@
+"use strict";
+
 // 1. Конструктор Person
 
 function Person(name, age) {
@@ -95,13 +97,12 @@ function User (name, age, citizenship, id, employment, position, login, pwd) {
    console.log (`${this.name} имеет логин ${this.login} и пароль ${this.pwd}`)
 };
 
-// 4. Конструктор Admin 
+// 5. Конструктор Admin 
 
 function Admin (name, age, citizenship, id, employment, position, login, pwd, isActiveAdmin) {
    User.apply(this, arguments);
    this.isActiveAdmin = isActiveAdmin;
-   this.pwd = pwd;
-}
+  }
 
 // Наследовать
    Admin.prototype = Object.create(User.prototype);
@@ -123,16 +124,17 @@ function Admin (name, age, citizenship, id, employment, position, login, pwd, is
 
    var persona = new Admin ('Slava Ilchenko', 40, 'Ukraine', '2881410536', 
     'CHI Software', 'Intern', 'slavailchenko', '1234', true);
-   persona.checkage();
-   persona.checkid();
-   persona.checkposition();
-   persona.checkAdmin ();
+   persona.checkage(); // Slava Ilchenko: взрослый
+   persona.checkid(); // Имеет гражданство Ukraine Slava Ilchenko присвоен 2881410536
+   persona.checkposition(); // Работает в CHI Software на должности Intern
+   persona.checkAdmin (); // Slava Ilchenko имеет логин slavailchenko и пароль 1234 
+   // Slava Ilchenko имеет права Администратора
 
 //
 
-persona instanceof Admin;
-persona instanceof User;
-persona instanceof Employment;
-persona instanceof StatusPerson;
-persona instanceof Person;
+console.log(persona instanceof Admin); //true
+console.log(persona instanceof User); //true
+console.log(persona instanceof Employment); //true
+console.log(persona instanceof StatusPerson); //true
+console.log(persona instanceof Person); //true
 
