@@ -38,6 +38,50 @@ const orders = require('./data/orders') // IMMUTABLE. DON'T CHANGE orders
  * ]
  * @returns {Array}
  */
+
+ function newUniqueArray (array, key1, key2, value) {
+
+    let tempArray = array.reduce((a, current) => {
+            if (current[key1] == value) {
+            a.push(current[key2]); 
+            }; 
+        return a;
+    }, []); 
+
+    let uniqueArray = [...new Set(tempArray)];
+    return uniqueArray;
+};
+
+m = newUniqueArray (cars, 'make', 'model', 'Chevrolet');
+c = newUniqueArray (cars, 'dealershipId', 'make', '113');
+
+
+console.log (newUniqueArray (cars, 'model', 'displayName', 'Equinox')); // displayNames
+console.log (newUniqueArray (cars, 'make', 'model', 'Chevrolet'));
+
+const models = m.reduce((items, current) => {
+    
+            let obj = {};
+            obj.model = current;
+            obj.displayNames = newUniqueArray (cars, 'model', 'displayName', current);
+            items.push(obj); 
+            return items;
+        }, 
+    []);
+
+const listcars = c.reduce((items, current) => {
+    
+            let obj = {};
+            obj.make = current;
+            obj.models = models;
+            items.push(obj); 
+            return items;
+        }, 
+    []);
+    
+// console.log (models); 
+console.log (listcars);
+
 const subtask1 = () => {
     return []
 }
