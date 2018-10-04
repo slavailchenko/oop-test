@@ -41,12 +41,24 @@ const orders = require('./data/orders');
 
 function newUniqueArray (array, key1, key2, value) {
 
-    let tempArray = array.reduce((a, current) => {
-            if (current[key1] == value) {
-            a.push(current[key2]); 
-        }; 
-        return a;
-    }, []); 
+    let tempArray = []; 
+    let j=0;
+
+    for (let i=0; i<array.length; i++) {
+         if (array[i][key1] == value) {
+            tempArray[j] = array[i][key2];
+            j++;
+        }
+
+        
+    };
+
+    // let tempArray = array.reduce((a, current) => {
+    //         if (current[key1] == value) {
+    //         a.push(current[key2]); 
+    //     }; 
+    //     return a;
+    // }, []); 
 
     let uniqueArray = [...new Set(tempArray)];
     return uniqueArray;
