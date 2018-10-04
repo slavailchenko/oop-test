@@ -261,9 +261,10 @@ const subtask5 = (minId, maxId, isReversed) => {
 const subtask6 = (list, minCarsCount) => {
 
     minCarsCount = minCarsCount || 100;
-    return array = list.filter ((item)=>{
+    let array = list.filter ((item)=>{
         return item.lengthofcarsid > minCarsCount;
-    })
+    });
+    return array;
 }
 
 console.time('subtask #1')
