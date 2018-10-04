@@ -203,24 +203,18 @@ function dynamicSort(property) {
 }
 
 const subtask3 = () => {
-    
+
+   
     return dealerships.reduce((itemsdealer, currentdealer) => {
             
             let obj = {};
             obj.dealershipId = currentdealer.dealershipId;
             obj.name = currentdealer.name;
             obj.state = currentdealer.state;
-            obj.carsId = cars.sort(dynamicSort('displayName')).
+            let d = newUniqueArray (cars, 'dealershipId', 'id', currentdealer.dealershipId);
+            obj.carsId = d.sort(dynamicSort('displayName')).
                       sort(dynamicSort('model')).
-                      sort(dynamicSort('make')).
-                      reduce((items, current) => {
-                           
-                                 if (current.dealershipId == obj.dealershipId) {
-                                items.push(current.id); 
-                        }
-                               return items;
-                            }, 
-                        []);
+                      sort(dynamicSort('make'));
             obj.lengthofcarsid = obj.carsId.length;  
     
             itemsdealer.push(obj); 
