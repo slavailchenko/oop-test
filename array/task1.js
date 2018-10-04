@@ -236,9 +236,20 @@ const subtask4 = (list) => {
  * @param {boolean} isReversed if set to true then reverse task logic (IN -> NOT IN)
  * @returns {Array} the same result as in subtask #3 but this logic should work only with those dealership whose dealershipId IN (NOT IN) [minId, maxId]
  */
-// const subtask5 = (minId, maxId, isReversed) => {
-//     return []
-// }
+const subtask5 = (minId, maxId, isReversed) => {
+    let list = subtask3 ();
+    
+    let f = list.filter((item) => {
+    if (item.dealershipId > minId && item.dealershipId < maxId) {
+                    item.isReversed = isReversed;
+                } else {
+                    item.isReversed = false;
+                };
+                return item;
+            });
+    
+    return f;
+}
 
 /**
  * Should return all dealerships (new list) who has enough cars (dealership.carIds > minCarsCount).
@@ -247,9 +258,13 @@ const subtask4 = (list) => {
  * @param {number} minCarsCount [default = 100]
  * @returns {Array} filtered dealersips 
  */
-// const subtask6 = (list, minCarsCount) => {
-//     return []
-// }
+const subtask6 = (list, minCarsCount) => {
+
+    minCarsCount = minCarsCount || 100;
+    return array = list.filter ((item)=>{
+        return item.lengthofcarsid > minCarsCount;
+    })
+}
 
 console.time('subtask #1')
 const result1 = subtask1()
@@ -271,15 +286,15 @@ const result4 = subtask4(result3)
 console.timeEnd('subtask #4')
 console.log('subtask #4 result: ', JSON.stringify(result4[0], null, 2), JSON.stringify(result4[result4.length - 1], null, 2))
 
-// console.time('subtask #5')
-// const result5 = subtask5()
-// console.timeEnd('subtask #5')
-// console.log('subtask #5 result: ', JSON.stringify(result5[0], null, 2), JSON.stringify(result5[result5.length - 1], null, 2))
+console.time('subtask #5')
+const result5 = subtask5(110, 117, true);
+console.timeEnd('subtask #5')
+console.log('subtask #5 result: ', JSON.stringify(result5[0], null, 2), JSON.stringify(result5[result5.length - 1], null, 2))
 
-// console.time('subtask #6')
-// const result6 = subtask6(result3)
-// console.timeEnd('subtask #6')
-// console.log('subtask #6 result: ', JSON.stringify(result6[0], null, 2), JSON.stringify(result6[result6.length - 1], null, 2))
+console.time('subtask #6')
+const result6 = subtask6(result3, 10)
+console.timeEnd('subtask #6')
+console.log('subtask #6 result: ', JSON.stringify(result6[0], null, 2), JSON.stringify(result6[result6.length - 1], null, 2))
 
 
 module.exports = {
@@ -287,6 +302,6 @@ module.exports = {
     subtask2,
     subtask3,
     subtask4,
-    // subtask5,
-    // subtask6
+    subtask5,
+    subtask6
 }
