@@ -73,19 +73,45 @@ const subtask1 = () => {
             obj.name = currentdealer.name;
             obj.state = currentdealer.state;
 
-            let c = newUniqueArray (cars, 'dealershipId', 'make', currentdealer.dealershipId);
-                
-            obj.cars = c.reduce((itemsMake, currentMake) => {
+            let listcarsofdealer = [], 
+                listcarsmake = [],
+                j = 0;
+
+            for (let i = 0; i<cars.length; i++) {
+                if (cars[i].dealershipId == currentdealer.dealershipId) {
+                    listcarsofdealer[j] = cars[i];
+                    listcarsmake[j]=cars[i].make;
+                    j++;
+                }
+
+            };
+
+            let uniqueListcarsmake = [...new Set(listcarsmake)];
+
+
+            // for (let k = 0; k<uniqueListcarsmake.length; k++) {
+            //     obj.cars[k].make = uniqueListcarsmake [k]; 
+
+            //     for (let l=0; l<listcarsofdealer.length; l++) {
+            //     obj.cars[k].models[l].model = newUniqueArray (listcarsofdealer, 'make', 'model', uniqueListcarsmake [k]);
+            //     obj.cars[k].models[l].displayNames = newUniqueArray (listcarsofdealer, 'model', 'displayNames', obj.cars[k].models[l].model);
+
+            //        }
+
+            //     };
+
+                            
+            obj.cars =  uniqueListcarsmake.reduce((itemsMake, currentMake) => {
 
                 let obj = {};
-                let m = newUniqueArray (cars, 'make', 'model', currentMake);
+                let m = newUniqueArray (listcarsofdealer, 'make', 'model', currentMake);
                 obj.make = currentMake;
                     
                 obj.models = m.reduce((itemsModel, currentModel) => {
     
                             let objmodel = {};
                             objmodel.model = currentModel;
-                            objmodel.displayNames = newUniqueArray (cars, 'model', 'displayName', currentModel);
+                            objmodel.displayNames = newUniqueArray (listcarsofdealer, 'model', 'displayName', currentModel);
                             itemsModel.push(objmodel); 
                             return itemsModel;
                         }, 
@@ -99,10 +125,10 @@ const subtask1 = () => {
     itemsdealer.push(obj); 
     return itemsdealer;
 
-}, 
-[]);
-  
-};
+        }, 
+    []);
+
+}; 
 
 /**
  *  SUBTASK #2
