@@ -88,19 +88,7 @@ const subtask1 = () => {
 
             let uniqueListcarsmake = [...new Set(listcarsmake)];
 
-
-            // for (let k = 0; k<uniqueListcarsmake.length; k++) {
-            //     obj.cars[k].make = uniqueListcarsmake [k]; 
-
-            //     for (let l=0; l<listcarsofdealer.length; l++) {
-            //     obj.cars[k].models[l].model = newUniqueArray (listcarsofdealer, 'make', 'model', uniqueListcarsmake [k]);
-            //     obj.cars[k].models[l].displayNames = newUniqueArray (listcarsofdealer, 'model', 'displayNames', obj.cars[k].models[l].model);
-
-            //        }
-
-            //     };
-
-                            
+     
             obj.cars =  uniqueListcarsmake.reduce((itemsMake, currentMake) => {
 
                 let obj = {};
@@ -151,16 +139,6 @@ const subtask1 = () => {
  * @returns {Array}
  */
 const subtask2 = () => {
-    
-    let tempCustomers = customers.reduce((items, current) => {
-    let obj = {};
-    obj.id = current.id;
-    obj.state = current.address.state;
-    items.push(obj); 
-        return items;
-        }, 
-   []);
-
 
     return dealerships.reduce((itemsdealer, currentdealer) => {
             
@@ -168,19 +146,30 @@ const subtask2 = () => {
             obj.dealershipId = currentdealer.dealershipId;
             obj.name = currentdealer.name;
             obj.state = currentdealer.state;
-            
-        
+
+
+            let carIds = newUniqueArray (cars, 'dealershipId', 'id', currentdealer.dealershipId);
+            let customerIds = orders.reduce((itemsOrder, currentOrder) => {
+
+                for (let i=0; i<carIds.length; i++) {
+                        if (currentOrder.inventoryId == carIds[i]) {
+                              itemsOrder.push(currentOrder.customerId);    
+                        }
+                     };
+                     return [...new Set(itemsOrder)];
+                
+                }, []);
+
             obj.sellingArea = currentdealer.sellingArea.reduce((itemsArea, currentArea) => {
 
                 let obj = {};
                 obj.state = currentArea;
-                 
-                let f = newUniqueArray (tempCustomers, 'state', 'id', currentArea);
+  
+                obj.customerIds = customerIds.filter((item) => {
                 
-                obj.customerIds = f.filter((item, i, items) => {
-                
-                for (let i=0; i<orders.length; i++) {
-                   if (item == orders[i].customerId) {
+                for (let i=0; i<customers.length; i++) {
+                  if (item == customers[i].id && 
+                    customers[i].address.state == currentArea) {
                     return item; 
                     }
                 }
@@ -195,7 +184,7 @@ const subtask2 = () => {
         return itemsdealer;
 
 }, 
-[]);
+[]); 
 
 };
 
