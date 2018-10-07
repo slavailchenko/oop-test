@@ -66,7 +66,7 @@ function newUniqueArray (array, key1, key2, value) {
 
 const subtask1 = () => {
     
-    return dealerships.reduce((itemsdealer, currentdealer) => {
+    return dealerships.map((currentdealer) => {
             
             let obj = {};
             obj.dealershipId = currentdealer.dealershipId;
@@ -89,32 +89,26 @@ const subtask1 = () => {
             let uniqueListcarsmake = [...new Set(listcarsmake)];
 
      
-            obj.cars =  uniqueListcarsmake.reduce((itemsMake, currentMake) => {
+            obj.cars =  uniqueListcarsmake.map((currentMake) => {
 
                 let obj = {};
                 let m = newUniqueArray (listcarsofdealer, 'make', 'model', currentMake);
                 obj.make = currentMake;
                     
-                obj.models = m.reduce((itemsModel, currentModel) => {
+                obj.models = m.map((currentModel) => {
     
                             let objmodel = {};
                             objmodel.model = currentModel;
                             objmodel.displayNames = newUniqueArray (listcarsofdealer, 'model', 'displayName', currentModel);
-                            itemsModel.push(objmodel); 
-                            return itemsModel;
-                        }, 
-                     []);
+                            return objmodel;
+                        });
 
-                    itemsMake.push(obj); 
-                    return itemsMake;
-            }, 
-        []);
+                    return obj;
+            });
     
-    itemsdealer.push(obj); 
-    return itemsdealer;
+        return obj;
 
-        }, 
-    []);
+        });
 
 }; 
 
@@ -140,7 +134,7 @@ const subtask1 = () => {
  */
 const subtask2 = () => {
 
-    return dealerships.reduce((itemsdealer, currentdealer) => {
+    return dealerships.map((currentdealer) => {
             
             let obj = {};
             obj.dealershipId = currentdealer.dealershipId;
@@ -180,11 +174,9 @@ const subtask2 = () => {
             }, 
         []);
     
-        itemsdealer.push(obj); 
-        return itemsdealer;
+        return obj;
 
-}, 
-[]); 
+    }); 
 
 };
 
@@ -217,6 +209,20 @@ function dynamicSort(property) {
     }
 }
 
+function dynamicSortMultiple() {
+
+    let arg = arguments;
+    return function (obj1, obj2) {
+        let i = 0, result = 0, numberOfProperties = arg.length;
+
+        while(result === 0 && i < numberOfProperties) {
+            result = dynamicSort(arg[i])(obj1, obj2);
+            i++;
+        }
+        return result;
+    }
+}
+
 const subtask3 = () => {
 
    
@@ -226,17 +232,26 @@ const subtask3 = () => {
             obj.dealershipId = currentdealer.dealershipId;
             obj.name = currentdealer.name;
             obj.state = currentdealer.state;
-            let d = newUniqueArray (cars, 'dealershipId', 'id', currentdealer.dealershipId);
-            obj.carsId = d.sort(dynamicSort('displayName')).
-                      sort(dynamicSort('model')).
-                      sort(dynamicSort('make'));
-            obj.lengthofcarsid = obj.carsId.length;  
+            let d = cars.filter((item) => 
+        { if (item.dealershipId == currentdealer.dealershipId) {
+            return item;
+                }
+          
+            }).sort(dynamicSortMultiple("make", "model", "displayName"));
+            
+        obj.carsId = d.reduce ((array, item) => {
+                    array.push(item.id);
+                    return array;
+                },
+                []);
+
+            obj.lengthofcarsid = d.length;  
     
             itemsdealer.push(obj); 
             return itemsdealer;
                 }, 
         []);
-    };
+    }; 
 
 /**
  * SUBTASK #4
@@ -246,8 +261,9 @@ const subtask3 = () => {
  */
 const subtask4 = (list) => {
     
-    return list.sort(dynamicSort('lengthofcarsid')).sort(dynamicSort('state'));
+    return list.sort(dynamicSortMultiple("state", "-lengthofcarsid"));
 }
+
 
 /**
  * SUBTASK #5
@@ -257,20 +273,45 @@ const subtask4 = (list) => {
  * @param {boolean} isReversed if set to true then reverse task logic (IN -> NOT IN)
  * @returns {Array} the same result as in subtask #3 but this logic should work only with those dealership whose dealershipId IN (NOT IN) [minId, maxId]
  */
-const subtask5 = (minId, maxId, isReversed) => {
-    let list = subtask3 ();
+const subtask5 = (minId=100000, maxId=100200, isReversed=true) => {
+        
+
+    return dealerships.filter((item) => {
+        if (item.dealershipId > minId && item.dealershipId < maxId) {
+            return item
+            }
+            }).
+    reduce((itemsdealer, currentdealer) => {
     
-    let f = list.filter((item) => {
-    if (item.dealershipId > minId && item.dealershipId < maxId) {
-                    item.isReversed = isReversed;
-                } else {
-                    item.isReversed = false;
-                };
-                return item;
-            });
-    
-    return f;
-}
+                
+        let obj = {};
+            obj.dealershipId = currentdealer.dealershipId;
+            obj.name = currentdealer.name;
+            obj.state = currentdealer.state;
+            let d = cars.filter((item) => 
+        { if (item.dealershipId == currentdealer.dealershipId) {
+            return item;
+                }
+          
+            }).sort(dynamicSortMultiple("make", "model", "displayName"));
+            
+        obj.carsId = d.reduce ((array, item) => {
+                    array.push(item.id);
+                    return array;
+                },
+                []);
+
+            obj.lengthofcarsid = d.length;
+        obj.isReversed = isReversed;    
+            itemsdealer.push(obj); 
+            return itemsdealer;
+              
+    }, 
+     
+        []);
+    }; 
+
+
 
 /**
  * Should return all dealerships (new list) who has enough cars (dealership.carIds > minCarsCount).
@@ -309,16 +350,14 @@ console.timeEnd('subtask #4')
 console.log('subtask #4 result: ', JSON.stringify(result4[0], null, 2), JSON.stringify(result4[result4.length - 1], null, 2))
 
 console.time('subtask #5')
-const result5 = subtask5(110, 117, true);
+const result5 = subtask5();
 console.timeEnd('subtask #5')
 console.log('subtask #5 result: ', JSON.stringify(result5[0], null, 2), JSON.stringify(result5[result5.length - 1], null, 2))
 
 console.time('subtask #6')
-const result6 = subtask6(result3, 10)
+const result6 = subtask6(result3)
 console.timeEnd('subtask #6')
 console.log('subtask #6 result: ', JSON.stringify(result6[0], null, 2), JSON.stringify(result6[result6.length - 1], null, 2))
-
-
 module.exports = {
     subtask1,
     subtask2,
