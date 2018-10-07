@@ -53,20 +53,13 @@ function newUniqueArray (array, key1, key2, value) {
         
     };
 
-    // let tempArray = array.reduce((a, current) => {
-    //         if (current[key1] == value) {
-    //         a.push(current[key2]); 
-    //     }; 
-    //     return a;
-    // }, []); 
-
     let uniqueArray = [...new Set(tempArray)];
     return uniqueArray;
 };
 
 const subtask1 = () => {
     
-    return dealerships.map((currentdealer) => {
+    return dealerships.reduce((itemsdealer, currentdealer) => {
             
             let obj = {};
             obj.dealershipId = currentdealer.dealershipId;
@@ -85,30 +78,58 @@ const subtask1 = () => {
                 }
 
             };
-
+            
             let uniqueListcarsmake = [...new Set(listcarsmake)];
-
      
-            obj.cars =  uniqueListcarsmake.map((currentMake) => {
+            obj.cars =  uniqueListcarsmake.reduce((itemsMake, currentMake) => {
 
                 let obj = {};
-                let m = newUniqueArray (listcarsofdealer, 'make', 'model', currentMake);
+                
                 obj.make = currentMake;
-                    
-                obj.models = m.map((currentModel) => {
-    
-                            let objmodel = {};
-                            objmodel.model = currentModel;
-                            objmodel.displayNames = newUniqueArray (listcarsofdealer, 'model', 'displayName', currentModel);
-                            return objmodel;
-                        });
 
-                    return obj;
-            });
-    
-        return obj;
+                let m = listcarsofdealer.reduce((array, item) => {
+                    if (item.make == currentMake) {
+                        array.push (item.model);
+                        };
+                        return array;
+                 }, []);
 
-        });
+                let uniqueM = [...new Set(m)];
+          
+                obj.models = uniqueM.reduce((itemsModel, currentModel) => {
+                            
+                        let objmodel = {};
+                                            
+                        objmodel.model = currentModel; 
+                                 
+                        objmodel.displayNames = listcarsofdealer.
+                            filter ((el) => {
+                                if (el.make == currentMake) {
+                                    return el;
+                                }
+                            }).
+                            reduce ((array, item) => {
+                                    if (item.model==currentModel) {
+                                        array.push (item.displayName);
+                                    };
+                                    return array;
+                                }, []);
+                                
+                            itemsModel.push(objmodel); 
+                            return itemsModel;
+                            }, 
+                         []);
+
+                    itemsMake.push(obj); 
+                    return itemsMake;
+            }, 
+        []);
+    
+    itemsdealer.push(obj); 
+    return itemsdealer;
+
+        }, 
+    []);
 
 }; 
 
@@ -134,7 +155,7 @@ const subtask1 = () => {
  */
 const subtask2 = () => {
 
-    return dealerships.map((currentdealer) => {
+    return dealerships.reduce((itemsdealer, currentdealer) => {
             
             let obj = {};
             obj.dealershipId = currentdealer.dealershipId;
@@ -174,9 +195,11 @@ const subtask2 = () => {
             }, 
         []);
     
-        return obj;
+        itemsdealer.push(obj); 
+        return itemsdealer;
 
-    }); 
+}, 
+[]); 
 
 };
 
