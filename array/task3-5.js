@@ -202,14 +202,14 @@ function getTheBest () {
 		}
 	});
 
-	let sorted = array.sort(dynamicSortMultiple('-price'));
+	let sorted = array.sort(dynamicSortMultiple('price'));
 	return sorted[0];
 }
 
 console.log (getTheBest ());
 
 function getMostEqualTo (valueIndicator, price) {
-	
+
 }
 
 
