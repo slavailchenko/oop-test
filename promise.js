@@ -1,11 +1,13 @@
 
 function A () {
+
+	let _a, _b, _c;
  
 	_setA = () => { 
 		return new Promise(resolve => {
 		   const time_A = Math.floor(Math.random() * (130 - 50 + 1) + 50);
 		    setTimeout(() => {
-  		       this._a = Math.floor(Math.random() * (10000 - 10 + 1) + 10);
+  		    _a = Math.floor(Math.random() * (10000 - 10 + 1) + 10);
 			// console.log (this._a);
 			resolve (time_A); 
 			// console.log(time_A);
@@ -18,7 +20,7 @@ function A () {
 		return new Promise(resolve => {
 		   const time_B = Math.floor(Math.random() * (220 - 30 + 1) + 30);
 		    setTimeout(() => {
-  		        this._b = new Date().getTime() / 3;
+  		    _b = new Date().getTime() / 3;
 			// console.log (this._b);
 			resolve (time_B);
 			// console.log(time_B);
@@ -31,7 +33,7 @@ function A () {
 		return new Promise(resolve => {
 		   const time_C = Math.floor(Math.random() * (300 - 10 + 1) + 10);
 		    setTimeout(() => {
-  		        this._c = val * 10;;
+  		    _c = val * 10;;
 			// console.log (this._c);
 			resolve (time_C);
 			// console.log(time_C);
@@ -63,9 +65,9 @@ function A () {
 	};
 
 	this.show = () => {
-		console.log (`a ${this._a}`);
-		console.log (`b ${this._b}`);
-		console.log (`c ${this._c}`);
+		console.log (`a ${_a}`);
+		console.log (`b ${_b}`);
+		console.log (`c ${_c}`);
 		};
 
 
