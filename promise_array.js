@@ -1,25 +1,18 @@
-class MyArray {
-
-  constructor(array) {
-    this.data = array;
-  }
-
+class MyArray extends Array {
 
   mapParallel (callback) {
-    const data = Array.from(this.data);
-    return Promise.all(data.map(callback)).then(d => 
+   
+    return Promise.all(this.map(callback)).then(d => 
     console.log(d)
     )}; 
 
   filterParallel (callback) {
-    const data = Array.from(this.data);
-    return Promise.all(data.map(el => filter(el))).
-    then(item => data.filter(el => item.shift()));
+    return Promise.all(this.map(el => filter(el))).
+    then(item => this.filter(el => item.shift()));
   }
 
   reducePromise (fn) {
-    const data = Array.from(this.data);
-    return data.reduce(
+    return this.reduce(
         (a, i) => a.then((arr) => fn(i).then(d => arr.concat([d]))),
         Promise.resolve([])
     )
@@ -75,7 +68,8 @@ const dealerships = [
     }
 ];
 
-let a = new MyArray (dealerships);
+let b = new MyArray ();
+a = b.concat(dealerships);
 
 // map
 
@@ -86,8 +80,6 @@ let arrayMap = a.mapParallel ((item) => {
     }, 0));
 });
 
-console.log (arrayMap);
-
 // filter 
 
 let filter = item => new Promise(resolve => setTimeout(resolve, 10)).
@@ -96,8 +88,6 @@ then(() => item.state == 'CA');
 let arrayFilter = a.filterParallel (filter).
 then(results => console.log(results))
 .catch(e => console.error(e));
-
-console.log (arrayFilter);
 
 // reduce
 
@@ -108,4 +98,3 @@ let arrayReduce = a.reducePromise(fn).
             then(data => console.log(data)).
         catch(e => console.error(e));
 
-console.log (arrayReduce);
