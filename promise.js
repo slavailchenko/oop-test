@@ -111,8 +111,3 @@ const showProcess = (i) => {
 };
 
 	showProcess(i=0);
-
-
-
-
-

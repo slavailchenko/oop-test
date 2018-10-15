@@ -1,19 +1,25 @@
-function MyApp (array) {
+class MyArray {
 
-  this.array = array;
+  constructor(array) {
+    this.data = array;
+  }
 
-  this.mapParallel = (callback) => {
-    return Promise.all(this.array.map(callback)).then(data => 
-    console.log(data)
-	)};	
 
-  this.filterParallel = (callback) => {
-    return Promise.all(this.array.filter(callback)).then(data => 
-    console.log(data)
+  mapParallel (callback) {
+    const data = Array.from(this.data);
+    return Promise.all(data.map(callback)).then(d => 
+    console.log(d)
     )}; 
 
-  this.reducePromise = (fn) => {
-    return this.array.reduce(
+  filterParallel (callback) {
+    const data = Array.from(this.data);
+    return Promise.all(data.map(el => filter(el))).
+    then(item => data.filter(el => item.shift()));
+  }
+
+  reducePromise (fn) {
+    const data = Array.from(this.data);
+    return data.reduce(
         (a, i) => a.then((arr) => fn(i).then(d => arr.concat([d]))),
         Promise.resolve([])
     )
@@ -69,29 +75,37 @@ const dealerships = [
     }
 ];
 
-const a = new MyApp (dealerships);
+let a = new MyArray (dealerships);
+
+// map
 
 let arrayMap = a.mapParallel ((item) => {
-	return new Promise(resolve => setTimeout(() => {
-		if (item.state == 'CA') item.isActive = true;
-		resolve(item);
-	}, 0));
+    return new Promise(resolve => setTimeout(() => {
+        if (item.state == 'CA') item.isActive = true;
+        resolve(item);
+    }, 0));
 });
 
 console.log (arrayMap);
 
-let arrayFilter = a.filterParallel ((item) => {
-    return new Promise(resolve => setTimeout(() => {
-        if (item.state === 'CA') resolve(item);
-    }, 200));
-});
+// filter 
+
+let filter = item => new Promise(resolve => setTimeout(resolve, 10)).
+then(() => item.state == 'CA');
+
+let arrayFilter = a.filterParallel (filter).
+then(results => console.log(results))
+.catch(e => console.error(e));
 
 console.log (arrayFilter);
+
+// reduce
 
 let fn = (i) => new Promise(res => {
     if (i.state == 'CA') i.isActive = true; res(i)})
 
 let arrayReduce = a.reducePromise(fn).
-            then(data => console.log(data));
+            then(data => console.log(data)).
+        catch(e => console.error(e));
 
 console.log (arrayReduce);
