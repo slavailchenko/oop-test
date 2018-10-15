@@ -16,7 +16,13 @@ class MyArray extends Array {
         (a, i) => a.then((arr) => fn(i).then(d => arr.concat([d]))),
         Promise.resolve([])
     )
-}   
+}
+
+  reduceAsync (callback) { 
+        this.reduce( async (a, i) => {
+            return (await a).concat(await callback(i))
+    }, Promise.resolve([]));
+}
 
 }
 
@@ -97,4 +103,13 @@ let fn = (i) => new Promise(res => {
 let arrayReduce = a.reducePromise(fn).
             then(data => console.log(data)).
         catch(e => console.error(e));
+
+// async reduce
+
+async function func (i) {
+    return new Promise(res => {
+    if (i.state == 'CA') i.isActive = true; res(i)});
+}
+
+let arrayReduceAsync = a.reduceAsync (func);
 
