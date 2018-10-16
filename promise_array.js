@@ -1,15 +1,18 @@
 class MyArray extends Array {
 
   mapParallel (callback) {
-   
     return Promise.all(this.map(callback)).then(d => 
     console.log(d)
     )}; 
 
-  filterParallel (callback) {
-    return Promise.all(this.map(el => filter(el))).
-    then(item => this.filter(el => item.shift()));
-  }
+  filterAsync  (callback) {
+    const arr= [];
+    return this.reduce ((promise, item) => {
+        return promise.then (()=>Promise.resolve(callback(item))).
+        then (r=>{if (r) arr.push (item)})
+    }, Promise.resolve()).
+    then(()=>console.log(arr));
+}
 
   reducePromise (fn) {
     return this.reduce(
@@ -91,7 +94,7 @@ let arrayMap = a.mapParallel ((item) => {
 let filter = item => new Promise(resolve => setTimeout(resolve, 10)).
 then(() => item.state == 'CA');
 
-let arrayFilter = a.filterParallel (filter).
+let arrayFilterAsync = a.filterAsync (filter).
 then(results => console.log(results))
 .catch(e => console.error(e));
 
